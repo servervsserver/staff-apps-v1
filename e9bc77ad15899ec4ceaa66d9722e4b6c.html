@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SvS Responses</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+.btn-floating{
+position: fixed;
+right:5vw;
+bottom:5vw;
+
+}
+
+.container{max-width: 1000vw !important;
+width: 90% !important;}
+
+.delcell{padding: 30px;}
+
+th[role=columnheader]:not(.no-sort) {
+	cursor: pointer;
+}
+
+th[role=columnheader]:not(.no-sort):after {
+	content: '';
+	border-width: 0 6px 6px;
+	border-style: solid;
+	border-color: #404040 transparent;
+	visibility: hidden;
+	opacity: 0;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+
+th[aria-sort=ascending]:not(.no-sort):after {
+	border-bottom: none;
+	border-width: 6px 6px 0;
+}
+
+th[aria-sort]:not(.no-sort):after {
+	visibility: visible;
+	opacity: 0.4;
+}
+
+th[role=columnheader]:not(.no-sort):hover:after {
+	visibility: visible;
+	opacity: 1;
+}
+
+.hide{visibility: hidden;}
+</style>
+</head>
+
+<body>
+    <div class="container" id="app">
+        <table id="sortT" class="table-sort table-arrows">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Name</th>
+                    <th>Pronouns</th>
+                    <th>Discord Tag</th>
+                    <th>Time Zone</th>
+                    <th>Job</th>
+                    <th>Experience</th>
+                    <th>Servers
+                    </th>
+                    <th>Extra Info</th>
+                    <th class="red-text delcell">Delete App</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr v-for="ap in apps">
+                    <td>
+                        
+                        <span class="hide">{{ap.timestamp}}</span>
+                        {{get_date(ap.timestamp)}}</td>
+                    <td>{{ap.name}}</td>
+                    <td><span v-if="ap.pronouns">{{ap.pronouns}}</span></td>
+                    <td>{{ap.discord_tag}}</td>
+                    <td>{{get_timezone(ap.time_zone)}} </td>
+                    <td>
+                        <ul class="collection">
+                            <li class="collection-item" v-bind:class="{purple : r == ap.fav, 'lighten-3' : r == ap.fav}" v-for="r in ap.roles">{{r}} </li>
+                        </ul>
+                    </td>  <td>
+                        <ul class="collection">
+                            <li class="collection-item" v-for="r in ap.role_experience">{{r}} </li>
+                        </ul>
+                    </td> <td>
+                        <ul class="collection">
+                            <li class="collection-item" v-for="s in ap.servers">{{s}}</li>
+                        </ul>
+                   
+                    </td>
+                    <td>
+                        <p>{{ap.desc}}</p>
+                    </td> 
+                   
+                    
+                    <td class="delcell">
+                        <button v-on:click="dele(ap.key)" class="btn white-text red">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a v-on:click="refresh" class="btn-floating btn-large waves-effect waves-light purple"><i class="material-icons">refresh</i></a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+   <script src="table-sort.js"></script>
+   <script type="module">
+
+        // Your web app's Firebase configuration
+       const firebaseConfig = {
+            apiKey: 'process.env.FIREBASE_API_KEY',
+            authDomain: "svs4-327921.firebaseapp.com",
+            projectId: "svs4-327921",
+            storageBucket: "svs4-327921.appspot.com",
+            messagingSenderId: "703070573943",
+            appId: "1:703070573943:web:96dbd2b465ea990d3ebd72"
+        };
+
+        // Initialize Firebase
+        const appf = firebase.initializeApp(firebaseConfig);
+
+        var db = firebase.firestore();
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                apps: [],
+                
+                timezone: [
+                    {
+                        "abbrev": "GMT",
+                        "name": "Greenwich Mean Time",
+                        "time": "GMT"
+                    },
+                    {
+                        "abbrev": "UTC",
+                        "name": "Universal Coordinated Time",
+                        "time": "GMT"
+                    },
+                    {
+                        "abbrev": "ECT",
+                        "name": "European Central Time",
+                        "time": "GMT+1:00"
+                    },
+                    {
+                        "abbrev": "EET",
+                        "name": "Eastern European Time",
+                        "time": "GMT+2:00"
+                    },
+                    {
+                        "abbrev": "ART",
+                        "name": "(Arabic) Egypt Standard Time",
+                        "time": "GMT+2:00"
+                    },
+                    {
+                        "abbrev": "EAT",
+                        "name": "Eastern African Time",
+                        "time": "GMT+3:00"
+                    },
+                    {
+                        "abbrev": "MET",
+                        "name": "Middle East Time",
+                        "time": "GMT+3:30"
+                    },
+                    {
+                        "abbrev": "NET",
+                        "name": "Near East Time",
+                        "time": "GMT+4:00"
+                    },
+                    {
+                        "abbrev": "PLT",
+                        "name": "Pakistan Lahore Time",
+                        "time": "GMT+5:00"
+                    },
+                    {
+                        "abbrev": "IST",
+                        "name": "India Standard Time",
+                        "time": "GMT+5:30"
+                    },
+                    {
+                        "abbrev": "BST",
+                        "name": "Bangladesh Standard Time",
+                        "time": "GMT+6:00"
+                    },
+                    {
+                        "abbrev": "VST",
+                        "name": "Vietnam Standard Time",
+                        "time": "GMT+7:00"
+                    },
+                    {
+                        "abbrev": "CTT",
+                        "name": "China Taiwan Time",
+                        "time": "GMT+8:00"
+                    },
+                    {
+                        "abbrev": "JST",
+                        "name": "Japan Standard Time",
+                        "time": "GMT+9:00"
+                    },
+                    {
+                        "abbrev": "ACT",
+                        "name": "Australia Central Time",
+                        "time": "GMT+9:30"
+                    },
+                    {
+                        "abbrev": "AET",
+                        "name": "Australia Eastern Time",
+                        "time": "GMT+10:00"
+                    },
+                    {
+                        "abbrev": "SST",
+                        "name": "Solomon Standard Time",
+                        "time": "GMT+11:00"
+                    },
+                    {
+                        "abbrev": "NST",
+                        "name": "New Zealand Standard Time",
+                        "time": "GMT+12:00"
+                    },
+                    {
+                        "abbrev": "MIT",
+                        "name": "Midway Islands Time",
+                        "time": "GMT-11:00"
+                    },
+                    {
+                        "abbrev": "HST",
+                        "name": "Hawaii Standard Time",
+                        "time": "GMT-10:00"
+                    },
+                    {
+                        "abbrev": "AST",
+                        "name": "Alaska Standard Time",
+                        "time": "GMT-9:00"
+                    },
+                    {
+                        "abbrev": "PST",
+                        "name": "Pacific Standard Time",
+                        "time": "GMT-8:00"
+                    },
+                    {
+                        "abbrev": "PNT",
+                        "name": "Phoenix Standard Time",
+                        "time": "GMT-7:00"
+                    },
+                    {
+                        "abbrev": "MST",
+                        "name": "Mountain Standard Time",
+                        "time": "GMT-7:00"
+                    },
+                    {
+                        "abbrev": "CST",
+                        "name": "Central Standard Time",
+                        "time": "GMT-6:00"
+                    },
+                    {
+                        "abbrev": "EST",
+                        "name": "Eastern Standard Time",
+                        "time": "GMT-5:00"
+                    },
+                    {
+                        "abbrev": "IET",
+                        "name": "Indiana Eastern Standard Time",
+                        "time": "GMT-5:00"
+                    },
+                    {
+                        "abbrev": "PRT",
+                        "name": "Puerto Rico and US Virgin Islands Time",
+                        "time": "GMT-4:00"
+                    },
+                    {
+                        "abbrev": "CNT",
+                        "name": "Canada Newfoundland Time",
+                        "time": "GMT-3:30"
+                    },
+                    {
+                        "abbrev": "AGT",
+                        "name": "Argentina Standard Time",
+                        "time": "GMT-3:00"
+                    },
+                    {
+                        "abbrev": "BET",
+                        "name": "Brazil Eastern Time",
+                        "time": "GMT-3:00"
+                    },
+                    {
+                        "abbrev": "CAT",
+                        "name": "Central African Time",
+                        "time": "GMT-1:00"
+                    }
+                ],
+
+
+            },
+            methods:{refresh: function(){
+                var docRef = db.collection("applications");
+        docRef.get().then((querySnapshot) => {
+            var arr = [];
+            querySnapshot.forEach((doc) => {
+                var obj = doc.data();
+                obj.key = doc.id;
+                arr.push(obj);  
+            });
+            
+                app.apps = arr;
+
+        });
+
+            },
+            dele : function(key){
+                console.log("TEST");
+                var conf = confirm("Are You sure you want to delete this?")
+                if(conf){
+                db.collection("applications").doc(key).delete()
+                app.refresh();}
+            },
+            get_date:function(timestamp){
+                if(!timestamp){return ""}
+                let myDate = new Date(timestamp).toLocaleString('en-GB')
+                return myDate;
+
+            },
+            get_timezone:function(tz){
+                console.log(tz);
+                var obj = app.timezone.find(o => o.name === tz)
+
+                return obj.name + " (" + obj.time+")"
+            }
+        
+        
+        
+        
+        },
+
+        computed:{
+
+            get_date:function(timestamp){
+                let myDate = new Date(timestamp).toLocaleString()
+                return myDate;
+
+            }
+
+        }
+        });
+
+
+        var docRef = db.collection("applications");
+        docRef.get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id);
+                // doc.data() is never undefined for query doc snapshots
+                var arr = app.apps;
+                var obj = doc.data();
+                obj.key = doc.id;
+                arr.push(obj);
+                app.apps = arr;
+            });
+
+            new Tablesort(document.getElementById('sortT'));
+        });
+    </script>
+</body>
+
+</html>

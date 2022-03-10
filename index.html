@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SvS Interest Form</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <style>
+        .btn {
+            width: 100%;
+        }
+
+        .collapsible-header label span {
+            color: black
+        }
+
+        span.summary {
+            color: gray;
+            font-style: italic;
+        }
+
+        .collapsible li.active i {
+
+            transform-origin: center center;
+            -ms-transform: rotate(180deg);
+            /* IE 9 */
+            -webkit-transform: rotate(180deg);
+            /* Chrome, Safari, Opera */
+            transform: rotate(180deg);
+        }
+
+        .rotate {
+            transform-origin: bottom center;
+            -moz-transition: all .3s linear;
+            -webkit-transition: all .3s linear;
+            transition: all .3s linear;
+        }
+
+        .collapsible-header i.right {
+            margin-left: auto;
+        }
+
+
+        .headerr {
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container" id="app">
+        <div class="row headerr">
+            <h1> SvS Team Sign-Up</h1>
+        </div>
+        <div class="row">
+            <p>Hi, thanks for considering signing up to the Server vs Server staff team! Since the scope of this project
+                is so large, the team behind it needs to be too- as there are a lot of different ways to contribute and
+                help out, the plan is to assign certain responsibilities to different teams, listed below.
+            </p>
+            <p>
+                This form registers your interest in joining the overall SvS team as well as indicating your personal
+                skills and interests that you'd like to put to use as part of it. You should gain access to staff
+                channels not long after you've submitted (if you experience any issues with the form please contact an
+                existing staff member).
+            </p>
+            <p>
+                Remember, your submitted form will be visible to the rest of the SvS staff team as a reference for your
+                skills, interests and practical information such as your timezone. You can be as detailed or as brief as
+                you like- just note down what you think is helpful to know about you as a member of the team!</p>
+
+
+        </div>
+        <hr>
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input v-model="application.name" placeholder="Placeholder" id="first_name" type="text"
+                            class="validate">
+                        <label for="first_name">Name</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input v-model="application.pronouns" placeholder="Placeholder" id="first_name" type="text"
+                            class="validate">
+                        <label for="first_name">Preferred Pronouns</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input v-model="application.discord_tag" id="last_name" type="text" class="validate">
+                        <label for="last_name">Discord Tag (username#9999)</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <select v-model="application.time_zone">
+                            <option value="" disabled selected>Choose your Timezone</option>
+                            <option v-for="t in timezone" v-bind:value="t.name">{{t.name}} ({{t.time}})</option>
+                        </select>
+                        <label>Time Zone</label>
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <h5>Which of the following teams are you interested in?</h5>
+
+
+
+                    <ul class="collapsible">
+                        <li>
+                            <div class="collapsible-header">
+
+                                <label>
+                                    <input value="ec" v-model="application.roles"
+                                        v-bind:disabled="application.roles.length > 2 && application.roles.indexOf('ec') === -1"
+                                        id="ec" type="checkbox" />
+                                    <span>
+
+                                    </span>
+                                </label> Event Coordination -&nbsp<span class="summary">{{jobs["ec"].desc}}</span>
+
+                                <i class="material-icons rotate right">expand_more</i>
+
+                            </div>
+                            <div class="collapsible-body">
+                                <ul class="collection">
+                                    <li class="collection-item">Handles meta-organisation: maintaining/facilitating
+                                        communication and collaboration between teams to set out and accomplish overall
+                                        event goals.</li>
+                                    <li class="collection-item">Coordinates the fundamentals/mechanics of events: rules,
+                                        timelines, requirements etc. </li>
+                                    <li class="collection-item"> Possibly responsible for more sensitive tasks such as
+                                        data/account access (password management, etc.) and finances.
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header"> <label>
+                                    <input value="cad" v-model="application.roles"
+                                        v-bind:disabled="application.roles.length > 2 && application.roles.indexOf('cad') === -1"
+                                        id="cad" type="checkbox" />
+                                    <span>
+
+                                    </span>
+                                </label>
+                                Creative and Design -&nbsp<span class="summary">{{jobs["cad"].desc}}</span>
+
+                                <i class="material-icons rotate right">expand_more</i>
+                            </div>
+                            <div class="collapsible-body">
+                                <ul class="collection">
+                                    <li class="collection-item"> Handles development of Art, Media, and Branding Assets-
+                                        including but not limited to visual art, design concepts, video edits</li>
+
+                                    <li class="collection-item">Handles development of Art, Media, and Branding Assets-
+                                        including but not limited to visual art, design concepts, video edits, etc.</li>
+                                    <li class="collection-item">Works closely with the Livestream/Tech and Social Media
+                                        teams to design and provide assets they need.
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header"><label>
+                                    <input value="sm" v-model="application.roles"
+                                        v-bind:disabled="application.roles.length > 2 && application.roles.indexOf('sm') === -1"
+                                        id="sm" type="checkbox" />
+                                    <span>
+
+                                    </span>
+                                </label>
+                                Social Media -&nbsp<span class="summary">{{jobs["sm"].desc}}</span>
+
+                                <i class="material-icons rotate right">expand_more</i>
+                            </div>
+                            <div class="collapsible-body">
+                                <ul class="collection">
+                                    <li class="collection-item">Manages social media accounts including but not limited
+                                        to: Twitch, Youtube, Instagram, and Twitter.</li>
+                                    <li class="collection-item">
+                                        Develops promotional / informational campaigns for events.
+                                    </li>
+                                    <li class="collection-item">
+                                        Works closely with Creative and Design team to develop this content.
+                                    </li>
+                                    <li class="collection-item">
+                                        Monitors and responds to queries outside of Discord.
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header"><label>
+                                    <input value="po" v-model="application.roles"
+                                        v-bind:disabled="application.roles.length > 2 && application.roles.indexOf('po') === -1"
+                                        id="po" type="checkbox" />
+                                    <span>
+
+                                    </span></label>
+                                Participant Outreach -&nbsp<span class="summary">{{jobs["po"].desc}}</span>
+
+                                <i class="material-icons rotate right">expand_more</i>
+                            </div>
+                            <div class="collapsible-body">
+                                <ul class="collection">
+                                    <li class="collection-item">Scouts, records and contacts new communities that might
+                                        be interested in participating.</li>
+                                    <li class="collection-item">Screens applying/scouted communities. Verifies that
+                                        they're suitable to enter the competition, principally based on their adherence
+                                        to our code of conduct, as well as their likelihood to be able to deliver a
+                                        submission. </li>
+                                    <li class="collection-item">Responsible for maintaining relations and checking up
+                                        with communities’ progress throughout signups and the competition period.
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header"><label>
+                                    <input value="fsc" v-model="application.roles"
+                                        v-bind:disabled="application.roles.length > 2 && application.roles.indexOf('fsc') === -1"
+                                        id="fsc" type="checkbox" />
+                                    <span>
+
+                                    </span>
+                                </label>
+                                Fundraising and Sponsorship -&nbsp<span class="summary">{{jobs["fsc"].desc}}</span>
+
+                                <i class="material-icons rotate right">expand_more</i>
+                            </div>
+                            <div class="collapsible-body">
+                                <ul class="collection">
+                                    <li class="collection-item">Reaches out and sustains relations to external
+                                        organisations such as charities and sponsors.</li>
+                                    <li class="collection-item">Responsible for communicating
+                                        status/requirements/opportunities between the wider SvS team and external
+                                        entities- often working closely with other teams such as the Social Media team.
+                                    </li>
+                                    <li class="collection-item">Acts as a recognisable point of contact for these
+                                        organisations- which may include sharing personal information (email, full name,
+                                        etc.).
+
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header"><label>
+                                    <input value="lst" v-model="application.roles"
+                                        v-bind:disabled="application.roles.length > 2 && application.roles.indexOf('lst') === -1"
+                                        id="lst" type="checkbox" />
+                                    <span>
+
+                                    </span> </label>
+
+                                Live Stream and Tech -&nbsp<span class="summary">{{jobs["lst"].desc}}</span>
+
+                                <i class="material-icons rotate right">expand_more</i>
+                            </div>
+                            <div class="collapsible-body">
+                                <ul class="collection">
+                                    <li class="collection-item">Maintains and develops the SvS Website, Discord bot
+                                        (Javascript) and livestream (OBS and Touchdesigner).</li>
+                                    <li class="collection-item">Works with the Creative and Design team to request and
+                                        develop any necessary assets.</li>
+                                    <li class="collection-item">Manages file/account/backup organisation.</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header"><label>
+                                    <input value="mod" v-model="application.roles"
+                                        v-bind:disabled="application.roles.length > 2 && application.roles.indexOf('mod') === -1"
+                                        id="mod" type="checkbox" />
+                                    <span>
+
+                                    </span>
+                                </label>
+                                Moderation -&nbsp<span class="summary">{{jobs["mod"].desc}}</span>
+
+                                <i class="material-icons rotate right">expand_more</i>
+                            </div>
+                            <div class="collapsible-body">
+                                <ul class="collection">
+                                    <li class="collection-item"> Keeping things clean on the server and the stream</li>
+
+                                    <li class="collection-item">Moderates both the SvS Discord server and live Twitch
+                                        chat, upholding both platform specific rules and our overall Code of Conduct.
+                                    </li>
+                                    <li class="collection-item">Resolves disputes/conflicts between community members as
+                                        well as preventing/removing spam.</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header blue-text"><label>
+
+                                </label>
+                                <i class="material-icons">info</i> Cross Team-Projects
+                                &nbsp
+                                <i class="material-icons rotate right">expand_more</i>
+                            </div>
+                            <div class="collapsible-body">
+                                <p>Here's some examples of cross-team projects that will require coordination between
+                                    multiple teams</p>
+                                <ul class="collection">
+                                    <li class="collection-item"> Establishing a formalised code of conduct for SvS as a
+                                        whole- both staff and participants, worked on across all teams and across the
+                                        entire community.</li>
+
+                                    <li class="collection-item"> Creating an art direction for SvS as a whole (including
+                                        social, stream and website designs) will require close collaboration between
+                                        Creative/Design and Livestream/Tech teams, as well as the Social Media team.
+                                    </li>
+                                    <li class="collection-item"> Developing, promoting, running and maintaining the SvS
+                                        IV streams will require all hands on deck given all the different facets of the
+                                        stream (including hosting!).
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+
+
+                    <h6>Which role are you most interested in?</h6>
+                    <p v-for="(aa,ind) in application.roles">
+                        <label>
+                            <input v-bind:value="jobs[aa].name" v-model="application.fav" name="top" type="radio" />
+                            <span>{{jobs[aa].name}}</span>
+                        </label>
+                    </p>
+                </div>
+
+
+                <div class="row">
+                    <h5>Skills/Experience </h5>
+                    <p>Please mention any particular skills, experience (i.e. with certain software or strategies),
+                        interests or ideas relevant to contributing as part of this team you'd like to share.</p>
+                    <ul class="collection">
+                        <li v-for="(aa,ind) in application.roles" class="collection-item">
+                            <textarea v-model="application.role_experience[ind]" v-bind:id="3+aa"
+                                class="materialize-textarea"></textarea>
+                            <label v-bind:for="3+aa">What skills do you have relating to {{jobs[aa].name}}?</label>
+                        </li>
+                    </ul>
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <div class="row">
+                    <h4>Optional Questions</h4>
+                    <h6>Are there any servers that you would like be associated with on this form?</h6>
+                    <p>For
+                        example, if you are particularly active or hold a leadership position within one or multiple
+                        communities.
+                    </p>
+                    <div class="input-field col s12">
+                        <span class="helper-text">Press enter after each server.</span>
+
+                        <div class="chips chips-placeholder">
+                        </div>
+                    </div>
+
+                    <h6> Is there any additional information you'd like to include on this form?</h6>
+                    <p> This can include but isn't limited to any skills or experience you think are relevant to express
+                        and
+                        haven't been able to mention yet, or a role you'd like to fill that you don't think is listed.
+                    </p>
+
+                    <div class="input-field col s12">
+                        <textarea v-model="application.desc" id="textarea1" class="materialize-textarea"></textarea>
+                        <label for="textarea1">List any experience and skills not listed above</label>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div class="row">
+                    <div class="col s12">
+
+                        <a v-on:click="submitapp"
+                            class="waves-effect btn-large  deep-purple darken-2 waves-light btn">Send It!</a>
+                        <blockquote>
+                            *If you'd like to fix anything just re-submit the form! </blockquote>
+                    </div>
+                </div>
+
+
+
+
+
+            </form>
+        </div>
+
+
+
+
+
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script type="module">
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.chips');
+            var instances = M.Chips.init(elems, {
+                placeholder: 'Enter Server ',
+                secondaryPlaceholder: '+Server',
+                onChipAdd: function () {
+                    var data = this.chipsData;
+                    var arr = [];
+                    for (var a in data) {
+                        arr.push(data[a].tag);
+                    }
+                    app.application.servers = arr;
+                }
+            });
+        });
+
+
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: 'process.env.FIREBASE_API_KEY',
+            authDomain: "svs4-327921.firebaseapp.com",
+            projectId: "svs4-327921",
+            storageBucket: "svs4-327921.appspot.com",
+            messagingSenderId: "703070573943",
+            appId: "1:703070573943:web:96dbd2b465ea990d3ebd72"
+        };
+
+        // Initialize Firebase
+        const appf = firebase.initializeApp(firebaseConfig);
+
+        var db = firebase.firestore();
+
+
+        function ConvertToCSV(objArray) {
+            var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+            var str = '';
+
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                for (var index in array[i]) {
+                    if (line != '') line += ','
+
+                    line += array[i][index];
+                }
+
+                str += line + '\r\n';
+            }
+
+            return str;
+        }
+
+        $(document).ready(function () {
+            $('select').formSelect();
+
+            $('.collapsible').collapsible();
+        });
+
+        var app = new Vue({
+            el: '#app',
+            methods: {
+                submitapp: function () {
+                    var obj = JSON.parse(JSON.stringify(app.application));
+                    for (var o in obj.roles) {
+                        obj.roles[o] = app.jobs[obj.roles[o]].name;
+                    }
+                    obj.timestamp = + new Date();
+                    db.collection("applications").add(obj);
+                    M.toast({ html: 'Application Submitted Successfully!', classes: 'rounded' });
+                }
+            },
+            data: {
+                jobs: {
+                    ec: { name: "Event Coordination", desc: "The glue that holds the rest of the teams together" },
+                    cad: { name: "Creative and Design", desc: "Creating content and making it beautiful" },
+                    sm: { name: "Social Media", desc: "Getting the word out and giving SvS a public presence" },
+                    po: { name: "Participant Outreach", desc: "Checking and communicating with participants" },
+                    fsc: { name: "Fundraising and Sponsorship Coordination", desc: "External relations and communication" },
+                    lst: { name: "Live Stream and Tech", desc: "Website, stream and general technical needs" },
+                    mod: { name: "Moderation", desc: "Keeping things clean on the server and the stream" },
+
+
+                }
+                ,
+
+                timezone: [
+                    {
+                        "abbrev": "GMT",
+                        "name": "Greenwich Mean Time",
+                        "time": "GMT"
+                    },
+                    {
+                        "abbrev": "UTC",
+                        "name": "Universal Coordinated Time",
+                        "time": "GMT"
+                    },
+                    {
+                        "abbrev": "ECT",
+                        "name": "European Central Time",
+                        "time": "GMT+1:00"
+                    },
+                    {
+                        "abbrev": "EET",
+                        "name": "Eastern European Time",
+                        "time": "GMT+2:00"
+                    },
+                    {
+                        "abbrev": "ART",
+                        "name": "(Arabic) Egypt Standard Time",
+                        "time": "GMT+2:00"
+                    },
+                    {
+                        "abbrev": "EAT",
+                        "name": "Eastern African Time",
+                        "time": "GMT+3:00"
+                    },
+                    {
+                        "abbrev": "MET",
+                        "name": "Middle East Time",
+                        "time": "GMT+3:30"
+                    },
+                    {
+                        "abbrev": "NET",
+                        "name": "Near East Time",
+                        "time": "GMT+4:00"
+                    },
+                    {
+                        "abbrev": "PLT",
+                        "name": "Pakistan Lahore Time",
+                        "time": "GMT+5:00"
+                    },
+                    {
+                        "abbrev": "IST",
+                        "name": "India Standard Time",
+                        "time": "GMT+5:30"
+                    },
+                    {
+                        "abbrev": "BST",
+                        "name": "Bangladesh Standard Time",
+                        "time": "GMT+6:00"
+                    },
+                    {
+                        "abbrev": "VST",
+                        "name": "Vietnam Standard Time",
+                        "time": "GMT+7:00"
+                    },
+                    {
+                        "abbrev": "CTT",
+                        "name": "China Taiwan Time",
+                        "time": "GMT+8:00"
+                    },
+                    {
+                        "abbrev": "JST",
+                        "name": "Japan Standard Time",
+                        "time": "GMT+9:00"
+                    },
+                    {
+                        "abbrev": "ACT",
+                        "name": "Australia Central Time",
+                        "time": "GMT+9:30"
+                    },
+                    {
+                        "abbrev": "AET",
+                        "name": "Australia Eastern Time",
+                        "time": "GMT+10:00"
+                    },
+                    {
+                        "abbrev": "SST",
+                        "name": "Solomon Standard Time",
+                        "time": "GMT+11:00"
+                    },
+                    {
+                        "abbrev": "NST",
+                        "name": "New Zealand Standard Time",
+                        "time": "GMT+12:00"
+                    },
+                    {
+                        "abbrev": "MIT",
+                        "name": "Midway Islands Time",
+                        "time": "GMT-11:00"
+                    },
+                    {
+                        "abbrev": "HST",
+                        "name": "Hawaii Standard Time",
+                        "time": "GMT-10:00"
+                    },
+                    {
+                        "abbrev": "AST",
+                        "name": "Alaska Standard Time",
+                        "time": "GMT-9:00"
+                    },
+                    {
+                        "abbrev": "PST",
+                        "name": "Pacific Standard Time",
+                        "time": "GMT-8:00"
+                    },
+                    {
+                        "abbrev": "PNT",
+                        "name": "Phoenix Standard Time",
+                        "time": "GMT-7:00"
+                    },
+                    {
+                        "abbrev": "MST",
+                        "name": "Mountain Standard Time",
+                        "time": "GMT-7:00"
+                    },
+                    {
+                        "abbrev": "CST",
+                        "name": "Central Standard Time",
+                        "time": "GMT-6:00"
+                    },
+                    {
+                        "abbrev": "EST",
+                        "name": "Eastern Standard Time",
+                        "time": "GMT-5:00"
+                    },
+                    {
+                        "abbrev": "IET",
+                        "name": "Indiana Eastern Standard Time",
+                        "time": "GMT-5:00"
+                    },
+                    {
+                        "abbrev": "PRT",
+                        "name": "Puerto Rico and US Virgin Islands Time",
+                        "time": "GMT-4:00"
+                    },
+                    {
+                        "abbrev": "CNT",
+                        "name": "Canada Newfoundland Time",
+                        "time": "GMT-3:30"
+                    },
+                    {
+                        "abbrev": "AGT",
+                        "name": "Argentina Standard Time",
+                        "time": "GMT-3:00"
+                    },
+                    {
+                        "abbrev": "BET",
+                        "name": "Brazil Eastern Time",
+                        "time": "GMT-3:00"
+                    },
+                    {
+                        "abbrev": "CAT",
+                        "name": "Central African Time",
+                        "time": "GMT-1:00"
+                    }
+                ],
+
+
+
+                application: {
+                    name: "",
+                    discord_tag: "",
+                    time_zone: "",
+                    desc: "",
+                    fav: "",
+                    roles: [],
+                    role_experience: [],
+                    timestamp: "",
+                    pronouns: "",
+                    servers: []
+                }
+            }
+        }
+        );
+
+
+    </script>
+
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+<!-- add desc button right next to  jobs
+delete button
+edit
+
+
+
+-->
